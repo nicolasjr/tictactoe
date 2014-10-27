@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicTacToe", "TicTacToe\TicTacToe.csproj", "{F5E9C095-C128-4609-ADC4-4EA4041210E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Program", "Program\Program.csproj", "{16AD5A28-BFC5-4FF2-9FBD-19F28E2F06B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicTacToeTests", "TicTacToeTests\TicTacToeTests.csproj", "{B8C2063D-C3DD-4B17-8E73-02D76349014F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+		Test|Any CPU = Test|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F5E9C095-C128-4609-ADC4-4EA4041210E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5E9C095-C128-4609-ADC4-4EA4041210E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5E9C095-C128-4609-ADC4-4EA4041210E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5E9C095-C128-4609-ADC4-4EA4041210E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5E9C095-C128-4609-ADC4-4EA4041210E5}.Test|Any CPU.ActiveCfg = Release|Any CPU
+		{F5E9C095-C128-4609-ADC4-4EA4041210E5}.Test|Any CPU.Build.0 = Release|Any CPU
+		{16AD5A28-BFC5-4FF2-9FBD-19F28E2F06B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16AD5A28-BFC5-4FF2-9FBD-19F28E2F06B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16AD5A28-BFC5-4FF2-9FBD-19F28E2F06B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16AD5A28-BFC5-4FF2-9FBD-19F28E2F06B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16AD5A28-BFC5-4FF2-9FBD-19F28E2F06B5}.Test|Any CPU.ActiveCfg = Release|Any CPU
+		{16AD5A28-BFC5-4FF2-9FBD-19F28E2F06B5}.Test|Any CPU.Build.0 = Release|Any CPU
+		{B8C2063D-C3DD-4B17-8E73-02D76349014F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8C2063D-C3DD-4B17-8E73-02D76349014F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8C2063D-C3DD-4B17-8E73-02D76349014F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8C2063D-C3DD-4B17-8E73-02D76349014F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8C2063D-C3DD-4B17-8E73-02D76349014F}.Test|Any CPU.ActiveCfg = Test|Any CPU
+		{B8C2063D-C3DD-4B17-8E73-02D76349014F}.Test|Any CPU.Build.0 = Test|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
