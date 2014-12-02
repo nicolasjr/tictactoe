@@ -2,8 +2,7 @@
 {
     public interface IPlayer
     {
-        BoardMarkerType Identifier();
+        Marker Marker { get; set; }
         Play Play(Board board);
-        void SetWin();
     }
 }

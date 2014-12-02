@@ -1,7 +1,4 @@
-﻿using System;
-using System.Text.RegularExpressions;
-
-namespace Program
+﻿namespace Program
 {
     using TicTacToe;
 
@@ -9,20 +6,16 @@ namespace Program
     {
         static void Main(string[] args)
         {
-            var playerReal = new PlayerReal();
-            var playerUnbeatable = new PlayerUnbeatable();
+            IConsole console = new GameConsole();
 
-            var matchManager = new MatchManager(playerReal, playerUnbeatable);
+            IPlayer playerReal = new PlayerReal(Marker.X, console);
+            IPlayer playerUnbeatable = new PlayerUnbeatable(Marker.O);
 
-            matchManager.StartNewMatch();  
+            const int boardSize = 3;
 
-            bool loop = true;
-            while (loop)
-            {
-                matchManager.RequestPlay();
-
-                loop = !matchManager.IsGameFinished();
-            }
+            Game game = new Game(boardSize, playerReal, playerUnbeatable, console);
+            
+            game.GameLoop();
         }
     }
 }

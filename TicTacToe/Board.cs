@@ -4,87 +4,76 @@ namespace TicTacToe
 {
     public class Board
     {
-        private readonly BoardMarkerType[,] board;
-
-        public int Height
+        public Board(int size)
         {
-            get
-            {
-                return this.board.GetUpperBound(1) + 1;
-            }
-        }
-        public int Width
-        {
-            get
-            {
-                return this.board.GetUpperBound(0) + 1;
-            }
-        }
-
-        public Board(int width, int height)
-        {
-            this.board = new BoardMarkerType[width, height];
+            this.board = new Marker[size * size];
+            boardRules = new BoardRules();
 
             ClearBoard();
         }
 
         public Board(Board other)
         {
-            this.board = new BoardMarkerType[other.Width, other.Height];
+            this.board = new Marker[other.Size * other.Size];
 
-            for (int i = 0; i < Height; i++)
-            {
-                for (int j = 0; j < Width; j++)
-                {
-                    this.board[j, i] = other.GetMarkAtPosition(j, i);
-                }
-            }
+            boardRules = new BoardRules();
+
+            for (int i = 0; i < this.board.Length; i++)
+                this.board[i] = other.GetMarkAtIndex(i);
+        }
+
+        private readonly Marker[] board; 
+
+        private readonly BoardRules boardRules;
+
+        public int Size
+        {
+            get { return (int)Math.Sqrt(this.board.Length); }
         }
 
         public void ClearBoard()
         {
-            for (int i = 0; i < Height; i++)
-            {
-                for (int j = 0; j < Width; j++)
-                {
-                    this.board[i, j] = BoardMarkerType.Empty;
-                }
-            }
-
-            Draw();
+            for (int i = 0; i < this.board.Length; i++)
+                this.board[i] = Marker.Empty;
         }
 
-        public bool MarkBoard(Play play)
+        public void MarkBoard(Play play)
         {
-            if (play.PositionX >= Width || play.PositionX < 0 ||
-                play.PositionY >= Height || play.PositionY < 0)
-            {
-                return false;
-            }
+            int index = GetBoardPositionIndex(play.PositionX, play.PositionY);
+            
+            this.board[index] = play.PlayerId;
+        }
 
-            if (this.board[play.PositionX, play.PositionY] != BoardMarkerType.Empty)
+        public bool CanActWithPlay(Play play)
+        {
+            bool positionIsWithinRange = PlayOutOfRange(play) == false;
+
+            if(!positionIsWithinRange)
                 return false;
 
-            this.board[play.PositionX, play.PositionY] = play.PlayerId;
+            bool positionIsEmpty = GetMarkAtPosition(play.PositionX, play.PositionY) == Marker.Empty;
 
-            Draw();
-
-            return true;
+            return positionIsEmpty;
         }
 
-        public BoardMarkerType[,] GetBoard()
+        public Marker GetMarkAtPosition(int x, int y)
         {
-            return this.board;
+            int index = GetBoardPositionIndex(x, y);
+
+            return GetMarkAtIndex(index);
         }
 
-        public BoardMarkerType GetMarkAtPosition(int x, int y)
+        public Marker GetMarkAtIndex(int index)
         {
-            return this.board[x, y];
+            if (index < 0 || index >= this.board.Length)
+                throw new ArgumentOutOfRangeException();
+
+            return this.board[index];
         }
 
         public bool AreAllPositionMarked()
         {
-            return GetTotalMarks() == Width * Height;
+            return GetTotalMarks() == this.board.Length;
         }
 
         public bool IsEmpty()
@@ -92,50 +81,32 @@ namespace TicTacToe
             return GetTotalMarks() == 0;
         }
 
+        public int GetBoardPositionIndex(int x, int y)
+        {
+            return x + (y * this.Size);
+        }
+
         public int GetTotalMarks()
         {
             int totalEmptyPositions = 0;
+            foreach (Marker marker in this.board)
+                if (marker == Marker.Empty)
+                    totalEmptyPositions++;
 
-            for (int i = 0; i < Height; i++)
-            {
-                for (int j = 0; j < Width; j++)
-                {
-                    if (this.board[i, j] == BoardMarkerType.Empty)
-                        totalEmptyPositions++;
-                }
-            }
-
-            return (Width * Height) - totalEmptyPositions;
+            return board.Length - totalEmptyPositions;
         }
 
-        private void Draw()
+        public bool PlayOutOfRange(Play play)
         {
-#if DEBUG
-            Console.Clear();
-#endif  
-            for (int i = 0; i < Height; i++)
-            {
-                string line = (i + 1) + "   ";
-                for (int j = 0; j < Width; j++)
-                {
-                    line += (board[j, i] == BoardMarkerType.Empty) ? " " : board[j, i].ToString();
-                    if (j < Width - 1)
-                    {
-                        line += " | ";
-                    }
-                }
+            bool isOutOfRangeXAxis = play.PositionX >= this.Size || play.PositionX < 0;
+            bool isOutOfRangeYAxis = play.PositionY >= this.Size || play.PositionY < 0;
 
-                Console.WriteLine(line);
+            return isOutOfRangeXAxis || isOutOfRangeYAxis;
+        }
 
-                if (i < Height - 1)
-                {
-                    Console.WriteLine("    __________");
-                }
-                else
-                {
-                    Console.WriteLine("\n    1   2   3");
-                }
-            }
+        public bool IsVictoryCondition(Marker marker)
+        {
+            return boardRules.FindWinCondition(this, marker);
         }
     }
 }

@@ -1,42 +1,37 @@
-﻿using System;
-
-namespace TicTacToe
+﻿namespace TicTacToe
 {
     public class PlayerReal : IPlayer
     {
+        public Marker Marker { get; set; }
 
-        public BoardMarkerType Identifier()
+        private readonly IConsole console;
+
+        public PlayerReal(Marker marker, IConsole console)
         {
-            return BoardMarkerType.X;
+            this.Marker = marker;
+            this.console = console;
         }
-
+        
         public Play Play(Board board)
         {
-            Console.WriteLine("\nChoose the column and row to play.");
-
-            Console.WriteLine("Row:");
-            string stringCol = Console.ReadLine();
-
-            int col;
-            int.TryParse(stringCol, out col);
-
-            Console.WriteLine("Column:");
-            string stringRow = Console.ReadLine();
+            console.WriteText(GameTexts.Row);
+            string stringRow = console.ReadInput();
 
             int row;
             int.TryParse(stringRow, out row);
 
+            console.WriteText(GameTexts.Column);
+            string stringCol = console.ReadInput();
+
+            int col;
+            int.TryParse(stringCol, out col);
+
             return new Play
                        {
-                           PlayerId = Identifier(),
-                           PositionX = row - 1,
-                           PositionY = col - 1
+                           PlayerId = this.Marker,
+                           PositionX = col - 1,
+                           PositionY = row - 1
                        };
-        }
-
-        public void SetWin()
-        {
-            Console.WriteLine("Human player wins");
         }
     }
 }

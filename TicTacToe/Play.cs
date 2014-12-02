@@ -10,6 +10,6 @@ namespace TicTacToe
         [Range(0, 2)]
         public int PositionY { get; set; }
 
-        public BoardMarkerType PlayerId { get; set; }
+        public Marker PlayerId { get; set; }
     }
 }

@@ -6,15 +6,17 @@ namespace TicTacToe
 {
     public class PlayerUnbeatable : IPlayer
     {
-        public BoardMarkerType Identifier()
+        public Marker Marker { get; set; }
+
+        public PlayerUnbeatable(Marker marker)
         {
-            return BoardMarkerType.O;
+            this.Marker = marker;
         }
 
         public Play Play(Board board)
         {
             Play newPlay = DecidePlay(board);
-            newPlay.PlayerId = Identifier();
+            newPlay.PlayerId = this.Marker;
 
             return newPlay;
         }
@@ -22,134 +24,126 @@ namespace TicTacToe
         private Play DecidePlay(Board board)
         {
             // Ground Rule #1: start marking center position.
-            if (board.GetMarkAtPosition(1, 1) == BoardMarkerType.Empty)
+            if (board.GetMarkAtPosition(1, 1) == Marker.Empty)
             {
-                return PlayAtCenter();
+                return PlayAtCenter(board);
             }
-            // Ground Rule #2: if center's already marked, mark a corner.
-            else if (board.GetTotalMarks() == 1)
+            // Ground Rule #2: if center's already marked and board's only marked once, mark a corner.
+            if (board.GetTotalMarks() == 1)
             {
-                return PlayAtCorner();
+                return PlayAtAnyCorner(board);
             }
             // Generic move.
-            var score = DecidePlay(board, 0, null);
-            return score.Play;
+            MinMaxScore maximumScore = MinMaxPlay(board, 0, null);
+            return maximumScore.Play;
         }
 
-        private Play PlayAtCenter()
+        private Play PlayAtCenter(Board board)
         {
-            return new Play
-                       {
-                           PlayerId = Identifier(),
-                           PositionX = 1,
-                           PositionY = 1
-                       };
+            int center = (board.Size - 1) / 2;
+
+            return CreatePlay(center, center, this.Marker);
         }
 
-        private Play PlayAtCorner()
+        private Play PlayAtAnyCorner(Board board)
         {
             Random random = new Random();
-            const int multiplier = 2;
+            int multiplier = board.Size - 1;
 
             // position can not be 1.
             int x = random.Next(0, 2)*multiplier;
             int y = random.Next(0, 2)*multiplier;
 
-            return new Play
-                   {
-                       PlayerId = Identifier(),
-                       PositionX = x,
-                       PositionY = y
-                   };
+            return CreatePlay(x, y, this.Marker);
         }
 
-        private Score DecidePlay(Board board, int depth, Play play)
+        private MinMaxScore MinMaxPlay(Board board, int depth, Play play)
         {
-            var rules = new GameRules();
-
-            var newBoard = new Board(board);
+            Board newBoard = new Board(board);
 
             if (play != null)
             {
                 // make move.
-                newBoard.GetBoard()[play.PositionX, play.PositionY] = play.PlayerId;
+                newBoard.MarkBoard(play);
 
                 // see if play results in final state.
-                var score = GetScore(newBoard, play, rules, depth);
+                MinMaxScore minMaxScore = GetMinMaxScore(newBoard, play, depth);
 
                 // if so, return score.
-                if (score != null)
+                if (minMaxScore != null)
                 {
-                    return score;
+                    return minMaxScore;
                 }
             }
 
             // update marker type.
-            BoardMarkerType markerType = play == null ? BoardMarkerType.O : (play.PlayerId == BoardMarkerType.O) ? BoardMarkerType.X : BoardMarkerType.O;
+            Marker marker = play == null 
+                ? Marker.O : (play.PlayerId == Marker.O) 
+                ? Marker.X : Marker.O;
 
             depth++;
 
-            var moves = new List<Score>();
+            List<Play> possiblePlays = PossiblePlaysInCurrentBoardState(newBoard, marker);
             // Compute every possible move's score and add to list
-            foreach (var possibleMove in rules.PossibleMoves(newBoard, markerType))
-            {
-                moves.Add(
-                    DecidePlay(newBoard, depth, possibleMove));
-            }
+            List<MinMaxScore> moves = possiblePlays.Select(possibleMove => MinMaxPlay(newBoard, depth, possibleMove)).ToList();
 
             // Find maximum score on list.
-            var maxScoreMove = FindMaxScore(moves);
-            return maxScoreMove;
+            MinMaxScore maxMinMaxScoreMove = FindMaxScore(moves);
+            return maxMinMaxScoreMove;
         }
 
-        private Score GetScore(Board board, Play play, GameRules rules, int depth)
+        private MinMaxScore GetMinMaxScore(Board board, Play play, int depth)
         {
-            var score = new Score
-                            {
-                                Play = play,
-                                Points = 0
-                            };
-
+            MinMaxScore minMaxScore = new MinMaxScore
+                                          {
+                                              Play = play,
+                                              Points = 0
+                                          };
             // Check win condition for player X
-            if (rules.FindWinCondition(board, BoardMarkerType.X))
+            if (board.IsVictoryCondition(Marker.X))
             {
-                score.Points = play.PlayerId == BoardMarkerType.X ? 10 - depth : depth - 10;
-                return score;
+                minMaxScore.Points = play.PlayerId == Marker.X ? 10 - depth : depth - 10;
+                return minMaxScore;
             }
             // Check win condition for player O
-            if (rules.FindWinCondition(board, BoardMarkerType.O))
+            if (board.IsVictoryCondition(Marker.O))
             {
-                score.Points = play.PlayerId == BoardMarkerType.O ? 10 - depth : depth - 10;
-                return score;
+                minMaxScore.Points = play.PlayerId == Marker.O ? 10 - depth : depth - 10;
+                return minMaxScore;
             }
             // Check draw condition
             if (board.AreAllPositionMarked())
             {
-                return score;
+                return minMaxScore;
             }
             // otherwise...
             return null;
         }
 
-        private Score FindMaxScore(List<Score> moves)
+        private MinMaxScore FindMaxScore(List<MinMaxScore> moves)
         {
-            var maxScoreMove = new List<Score>();
-            maxScoreMove.Add(moves.First());
-            foreach (Score move in moves)
-            {
-                if (move.Points > maxScoreMove.First().Points)
-                {
-                    maxScoreMove.Clear();
-                    maxScoreMove.Add(move);
-                }
-            }
-
-            return maxScoreMove.First();
+            return moves.OrderByDescending(i => i.Points).FirstOrDefault();
         }
 
-        public void SetWin()
+        private List<Play> PossiblePlaysInCurrentBoardState(Board board, Marker marker)
         {
-            Console.WriteLine("Unbeatable Player Strikes again...");
+            List<Play> moves = new List<Play>();
+            for (int i = 0; i < board.Size; i++)
+                for (int j = 0; j < board.Size; j++)
+                    if (board.GetMarkAtPosition(i, j) == Marker.Empty)
+                        moves.Add(CreatePlay(i, j, marker));
+
+            return moves;            
+        }
+
+        private Play CreatePlay(int x, int y, Marker marker)
+        {
+            return new Play
+                       {
+                           PlayerId = marker,
+                           PositionX = x,
+                           PositionY = y
+                       };
         }
     }
 }

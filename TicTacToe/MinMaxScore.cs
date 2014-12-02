@@ -1,6 +1,6 @@
 ﻿namespace TicTacToe
 {
-    public class Score
+    public class MinMaxScore
     {
         public Play Play { get; set; }
 

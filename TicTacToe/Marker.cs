@@ -1,6 +1,6 @@
 ﻿namespace TicTacToe
 {
-    public enum BoardMarkerType
+    public enum Marker
     {
         X,
         O,

@@ -49,9 +49,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BoardTests.cs" />
-    <Compile Include="MatchManagerTests.cs" />
-    <Compile Include="PlayerTests.cs" />
-    <Compile Include="GameRulesTests.cs" />
+    <Compile Include="GameConsoleTests.cs" />
+    <Compile Include="GameTests.cs" />
+    <Compile Include="PlayerRealTests.cs" />
+    <Compile Include="PlayerUnbeatableTests.cs" />
+    <Compile Include="BoardRulesTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

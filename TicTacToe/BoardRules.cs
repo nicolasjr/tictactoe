@@ -2,7 +2,7 @@
 
 namespace TicTacToe
 {
-    public class GameRules
+    public class BoardRules
     {
         public static int[][] PositionsToCheck  =  new int[][]
                                                        {
@@ -16,20 +16,20 @@ namespace TicTacToe
                                                            new int[] {0, -1}
                                                        };
 
-        public bool FindWinCondition(Board board, BoardMarkerType markerType)
+        public bool FindWinCondition(Board board, Marker marker)
         {
-            foreach (int[] position in GameRules.PositionsToCheck)
+            foreach (int[] position in PositionsToCheck)
             {
                 for (int i = 0; i < 3; i++)
                 {
-                    var play = new Play
-                    {
-                        PlayerId = board.GetMarkAtPosition(i, i),
-                        PositionX = i,
-                        PositionY = i
-                    };
+                    Play play = new Play
+                                    {
+                                        PlayerId = board.GetMarkAtPosition(i, i),
+                                        PositionX = i,
+                                        PositionY = i
+                                    };
 
-                    if(CheckBoard(board, play, position, markerType))
+                    if(CheckBoard(board, play, position, marker))
                         return true;
                 }
             }
@@ -37,38 +37,36 @@ namespace TicTacToe
             return false;
         }
 
-        private bool CheckBoard(Board board, Play play, int[] checkPositions, BoardMarkerType markerType)
+        private bool CheckBoard(Board board, Play play, int[] checkPositions, Marker marker)
         {
-            if (play.PlayerId != markerType)
+            if (play.PlayerId != marker)
                 return false;
 
             int deltaX = checkPositions[0];
             int deltaY = checkPositions[1];
 
             // List to keep track of plays in the direction that's being searched. 
-            var plays = new List<Play>();
-            plays.Add(play);
+            List<Play> plays = new List<Play> { play };
 
             const int middlePos = 1;
 
-            var firstPlay = play;
+            Play firstPlay = play;
 
             for (int i = 0; i < 2; i++)
             {
-                // checks if new positions are out of range.
-                if (firstPlay.PositionX + deltaX > board.Width - 1 || firstPlay.PositionX + deltaX < 0 ||
-                    firstPlay.PositionY + deltaY > board.Height - 1 || firstPlay.PositionY + deltaY < 0)
-                    return false;
-
                 // creates a new play, based on checkPositions values.
-                var nextPlay = new Play
+                Play nextPlay = new Play
                                     {
-                                        PlayerId = board.GetMarkAtPosition(firstPlay.PositionX + deltaX, firstPlay.PositionY + deltaY),
                                         PositionX = firstPlay.PositionX + deltaX,
                                         PositionY = firstPlay.PositionY + deltaY
                                     };
 
-                if (nextPlay.PlayerId != markerType)
+                if (board.PlayOutOfRange(nextPlay))
+                    return false;
+
+                nextPlay.PlayerId = board.GetMarkAtPosition(nextPlay.PositionX, nextPlay.PositionY);
+
+                if (nextPlay.PlayerId != marker)
                     return false;
 
                 plays.Add(nextPlay);
@@ -94,26 +92,6 @@ namespace TicTacToe
             return true;
         }
 
-        public List<Play> PossibleMoves(Board board, BoardMarkerType markerType)
-        {
-            var moves = new List<Play>();
-            for (int i = 0; i < board.Width; i++)
-            {
-                for (int j = 0; j < board.Height; j++)
-                {
-                    if (board.GetMarkAtPosition(i, j) == BoardMarkerType.Empty)
-                    {
-                        moves.Add(new Play
-                                      {
-                                          PlayerId = markerType,
-                                          PositionX = i,
-                                          PositionY = j
-                                      });
-                    }
-                }
-            }
-
-            return moves;
-        }
+        
     }
 }
