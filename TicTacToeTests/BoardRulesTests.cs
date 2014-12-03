@@ -20,9 +20,9 @@ namespace TicTacToeTests
 
             Play play = CreatePlay(lineIndex, anyStartingYPosition, Marker.X);
 
-            BoardRules ticTacToe = new BoardRules();
+            VictoryCondition ticTacToe = new VictoryCondition();
 
-            bool isWinCondition = ticTacToe.FindWinCondition(board, play.PlayerId);
+            bool isWinCondition = ticTacToe.FoundVictoryCondition(board, play.PlayerId);
 
             Assert.AreEqual(true, isWinCondition);
         }
@@ -41,9 +41,9 @@ namespace TicTacToeTests
 
             Play play = CreatePlay(anyStartingXPosition, columnIndex, Marker.X);
 
-            BoardRules ticTacToe = new BoardRules();
+            VictoryCondition ticTacToe = new VictoryCondition();
 
-            bool isWinCondition = ticTacToe.FindWinCondition(board, play.PlayerId);
+            bool isWinCondition = ticTacToe.FoundVictoryCondition(board, play.PlayerId);
 
             Assert.AreEqual(true, isWinCondition);
         }
@@ -58,9 +58,9 @@ namespace TicTacToeTests
 
             Play play = CreatePlay(0, 0, Marker.X);
 
-            BoardRules ticTacToe = new BoardRules();
+            VictoryCondition ticTacToe = new VictoryCondition();
 
-            bool isWinCondition = ticTacToe.FindWinCondition(board, play.PlayerId);
+            bool isWinCondition = ticTacToe.FoundVictoryCondition(board, play.PlayerId);
 
             Assert.AreEqual(true, isWinCondition);
         }
@@ -75,9 +75,9 @@ namespace TicTacToeTests
 
             Play play = CreatePlay(0, 2, Marker.X);
 
-            BoardRules ticTacToe = new BoardRules();
+            VictoryCondition ticTacToe = new VictoryCondition();
 
-            bool isWinCondition = ticTacToe.FindWinCondition(board, play.PlayerId);
+            bool isWinCondition = ticTacToe.FoundVictoryCondition(board, play.PlayerId);
 
             Assert.AreEqual(true, isWinCondition);
         }
