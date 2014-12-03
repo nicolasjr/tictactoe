@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace TicTacToe
 {
@@ -7,7 +8,7 @@ namespace TicTacToe
         public Board(int size)
         {
             this.board = new Marker[size * size];
-            boardRules = new BoardRules();
+            victoryCondition = new VictoryCondition();
 
             ClearBoard();
         }
@@ -16,7 +17,7 @@ namespace TicTacToe
         {
             this.board = new Marker[other.Size * other.Size];
 
-            boardRules = new BoardRules();
+            victoryCondition = new VictoryCondition();
 
             for (int i = 0; i < this.board.Length; i++)
                 this.board[i] = other.GetMarkAtIndex(i);
@@ -24,7 +25,7 @@ namespace TicTacToe
 
         private readonly Marker[] board; 
 
-        private readonly BoardRules boardRules;
+        private readonly VictoryCondition victoryCondition;
 
         public int Size
         {
@@ -88,10 +89,7 @@ namespace TicTacToe
 
         public int GetTotalMarks()
         {
-            int totalEmptyPositions = 0;
-            foreach (Marker marker in this.board)
-                if (marker == Marker.Empty)
-                    totalEmptyPositions++;
+            int totalEmptyPositions = this.board.Count(marker => marker == Marker.Empty);
 
             return board.Length - totalEmptyPositions;
         }
@@ -106,7 +104,7 @@ namespace TicTacToe
 
         public bool IsVictoryCondition(Marker marker)
         {
-            return boardRules.FindWinCondition(this, marker);
+            return victoryCondition.FoundVictoryCondition(this, marker);
         }
     }
 }

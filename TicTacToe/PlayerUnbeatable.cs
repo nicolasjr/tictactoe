@@ -24,9 +24,10 @@ namespace TicTacToe
         private Play DecidePlay(Board board)
         {
             // Ground Rule #1: start marking center position.
-            if (board.GetMarkAtPosition(1, 1) == Marker.Empty)
+            int center = (board.Size - 1) / 2;
+            if (board.GetMarkAtPosition(center, center) == Marker.Empty)
             {
-                return PlayAtCenter(board);
+                return PlayAtCenter(center);
             }
             // Ground Rule #2: if center's already marked and board's only marked once, mark a corner.
             if (board.GetTotalMarks() == 1)
@@ -38,10 +39,8 @@ namespace TicTacToe
             return maximumScore.Play;
         }
 
-        private Play PlayAtCenter(Board board)
+        private Play PlayAtCenter(int center)
         {
-            int center = (board.Size - 1) / 2;
-
             return CreatePlay(center, center, this.Marker);
         }
 
