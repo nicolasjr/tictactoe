@@ -25,7 +25,18 @@ namespace TicTacToe
 
                 Console.WriteLine(line);
 
-                Console.WriteLine(i < board.Size - 1 ? "    __________" : "\n    1   2   3");
+                string row = i < board.Size - 1 ? "    " : "\n    ";
+
+                for (int k = 0; k < board.Size; k++)
+                {
+                    if (i < board.Size - 1)
+                        row += "___";
+                    else
+                        row += (k + 1) + "   ";
+                }
+
+                //Console.WriteLine(i < board.Size - 1 ? "    _________" : "\n    1   2   3");
+                Console.WriteLine(row);
             }
         }
 
